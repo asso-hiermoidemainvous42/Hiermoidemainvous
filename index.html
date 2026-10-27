@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hier, MOI… Demain, VOUS ?</title>
+    <style>
+        :root {
+            --primary: #d6336c;
+            --primary-soft: #fff0f3;
+            --text-dark: #2c2c2c;
+            --text-muted: #666666;
+            --bg-light: #fafafa;
+            --border-color: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .btn-join {
+            border: 1px solid var(--text-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .admin-toggle-wrapper {
+            background: #f1f3f5;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+
+        .admin-bar {
+            display: none;
+            background: var(--primary-soft);
+            border-bottom: 1px solid #ffccd5;
+            padding: 12px 5%;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        body.editing .admin-bar {
+            display: flex;
+        }
+
+        body.editing [contenteditable="true"] {
+            outline: 2px dashed var(--primary);
+            padding: 2px 4px;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            border: 1px solid #ccc;
+            background: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-interest {
+            background-color: var(--primary-soft);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-interest:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        section {
+            padding: 50px 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .hero-text { flex: 1.2; }
+        .hero-title { font-size: 38px; margin-bottom: 15px; }
+        .hero-title strong { color: var(--primary); }
+        .hero-subtitle { color: var(--text-muted); font-size: 16px; margin-bottom: 25px; }
+
+        .hero-card {
+            flex: 0.8;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.02);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .logo-slot {
+            width: 100%;
+            min-height: 120px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+
+        .logo-slot img {
+            max-width: 100%;
+            max-height: 140px;
+            object-fit: contain;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .pillar-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .edito-container {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 20px;
+        }
+
+        .edito-signature {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .support-types-box {
+            background: #fff;
+            border: 1px solid #ffccd5;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            background-color: #fff9fa;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .support-card {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+
+        .support-card h4 {
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .support-card p {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .photo-upload-zone {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            min-height: 450px;
+            border: 2px dashed var(--primary);
+            background: var(--primary-soft);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-upload-zone img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+        }
+
+        .quote-box {
+            background: #fff;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        .filter-bar {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-bar select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            background: white;
+        }
+
+        .grid-creations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .card-creation {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .card-creation.is-soldout {
+            opacity: 0.75;
+            background: #fdfdfd;
+        }
+        .card-creation.is-soldout .card-img {
+            filter: grayscale(40%);
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            z-index: 10;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .badge-ready { background: #d4edda; color: #155724; }
+        .badge-preparing { background: #fff3cd; color: #856404; }
+        .badge-soldout { background: #f8d7da; color: #721c24; }
+
+        .card-creation[data-visibility="hidden"] { display: none; }
+        body.editing .card-creation[data-visibility="hidden"] {
+            display: flex;
+            opacity: 0.6;
+            border: 1px dashed var(--primary);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+
+        .card-creation:hover .card-img {
+            transform: scale(1.15); 
+        }
+
+        .card-body {
+            padding: 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-code {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .btn-edit-card {
+            display: none;
+            margin-top: 10px;
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        body.editing .btn-edit-card { display: block; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 600; }
+        .form-group input, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">Hier, MOI… Demain, VOUS ?</div>
+        <nav>
+            <a href="#asso">L’association</a>
+            <a href="#edito">L’édito</a>
+            <a href="#actions">Nos actions</a>
+            <a href="#creations">Les créations</a>
+            <a href="https://www.helloasso.com/associations/hier-moi-demain-vous/adhesions/devenir-membre-actif" target="_blank" rel="noopener" class="btn-join">Je deviens membre ↗</a>
+            
+            <div class="admin-toggle-wrapper">
+                <span>Personnaliser</span>
+                <label class="switch">
+                    <input type="checkbox" id="mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </nav>
+    </header>
+
+    <div class="admin-bar">
+        <span>⚙️ <strong>Mode Personnaliser Actif</strong> : Vous pouvez tout modifier et gérer vos articles !</span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-primary" onclick="openModal()">+ Ajouter une création à vendre</button>
+            <button class="btn-secondary" onclick="exportCSV()">Exporter stock (CSV)</button>
+            <button class="btn-secondary" onclick="document.getElementById('import-file').click()">Importer stock (CSV)</button>
+            <input type="file" id="import-file" accept=".csv" style="display:none;" onchange="importCSV(event)">
+        </div>
+    </div>
+
+    <!-- Presentation / Hero -->
+    <section class="hero" id="asso">
+        <div class="hero-text">
+            <span class="section-tag" contenteditable="false">• Aux côtés des personnes atteintes d’un cancer · Loi 1901</span>
+            <h1 class="hero-title" contenteditable="false">Devenez un maillon de notre <strong contenteditable="false">chaîne de solidarité.</strong></h1>
+            <p class="hero-subtitle" contenteditable="false">Aidons les personnes atteintes d’un cancer. Ensemble pour faire la différence.</p>
+            <div style="display:flex; gap:12px;">
+                <a href="#creations" class="btn-primary">Découvrir nos créations ↘</a>
+                <a href="#edito" class="btn-secondary">Notre association →</a>
+            </div>
+        </div>
+        
+        <div class="hero-card" onclick="triggerLogoUpload()">
+            <div class="logo-slot" id="logo-slot">
+                <img id="hero-logo-img" src="" alt="Logo" style="display:none;">
+                <span id="logo-prompt-text" style="font-size:13px; color:var(--text-muted);">📷 Cliquez en mode Personnaliser pour mettre votre Logo ici</span>
+            </div>
+            <input type="file" id="hero-logo-input" accept="image/*" style="display:none;" onchange="loadHeroLogo(event)">
+            
+            <h2 style="color:var(--primary); font-size: 20px; margin-bottom: 5px;" contenteditable="false">Hier, MOI... Demain, VOUS ?</h2>
+            <p style="font-size: 13px; color: var(--text-muted);" contenteditable="false">Ensemble pour faire la différence.</p>
+            <p style="margin-top: 10px; font-weight:600; color:var(--primary); font-size:13px;" contenteditable="false">Soutenir • Se mobiliser • Agir</p>
+        </div>
+    </section>
+
+    <!-- Le sens de notre engagement -->
+    <section>
+        <span class="section-tag" contenteditable="false">LE SENS DE NOTRE ENGAGEMENT</span>
+        <h2 style="font-size: 28px; margin-bottom: 10px;" contenteditable="false">Chacun peut être ce coup de pouce.</h2>
+        <p contenteditable="false">Hier, MOI… Demain, VOUS ? aide les personnes atteintes d’un cancer. L’association porte une conviction simple : la solidarité peut apporter une aide concrète dans les épreuves de la maladie.</p>
+        
+        <div class="pillars-grid">
+            <div class="pillar-item"><strong contenteditable="false">Solidarité</strong></div>
+            <div class="pillar-item"><strong contenteditable="false">Entraide</strong></div>
+            <div class="pillar-item"><strong contenteditable="false">Aide concrète</strong></div>
+            <div class="pillar-item"><strong contenteditable="false">Bienveillance</strong></div>
+        </div>
+
+        <p contenteditable="false">Adhérer à l’association, choisir une création ou faire connaître notre démarche : chaque geste contribue à notre engagement auprès des personnes atteintes d’un cancer.</p>
+    </section>
+
+    <!-- Mot de la Présidente -->
+    <section id="edito">
+        <span class="section-tag" contenteditable="false">LE MOT DE LA PRÉSIDENTE</span>
+        <h2 style="font-size: 28px; margin-bottom: 10px;" contenteditable="false">Une conviction, une chaîne de solidarité.</h2>
+        
+        <div class="edito-container">
+            <div style="font-size: 15px; color: #444; display:flex; flex-direction:column; gap:12px;">
+                <p contenteditable="false"><strong>Bonjour à toutes et tous,</strong></p>
+                <p contenteditable="false">Hier, MOI… Demain, VOUS ? est née d'un vécu et d’une envie : transformer une épreuve en un élan de solidarité pour aider les personnes atteintes d’un cancer. Parce qu’un jour nous pouvons avoir besoin d’aide et, un autre jour, être en mesure d’en apporter.</p>
+                <p contenteditable="false">Je souhaite faire vivre une association humaine, attentive aux besoins des personnes atteintes d’un cancer et tournée vers l’aide concrète. Notre première action en est le reflet : observer une difficulté pendant les soins, en parler, puis imaginer ensemble une solution adaptée.</p>
+                <p contenteditable="false">La prise en charge à 100% n'empêche pas les restes à charge que l'on peut avoir, notamment avec des soins pour contrer les effets secondaires de la chimiothérapie. Pouvoir aider financièrement les personnes atteintes d'un cancer, c'est alléger leur surcharge mentale pour qu'elles puissent se concentrer sur leur santé.</p>
+                <p contenteditable="false">En soutenant notre association, vous transformez une expérience personnelle en une formidable chaîne de solidarité !</p>
+            </div>
+
+            <div class="edito-signature">
+                <h3 contenteditable="false" style="font-size:18px; color:var(--primary);">Sophie MAISSE</h3>
+                <p contenteditable="false" style="font-size:13px; color:var(--text-muted);">Présidente de l’association</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nos Actions -->
+    <section id="actions">
+        <span class="section-tag" contenteditable="false">NOS ACTIONS</span>
+        <h2 style="font-size: 28px; margin-bottom: 10px;" contenteditable="false">Des besoins réels. Des gestes concrets.</h2>
+        <p style="color:var(--text-muted);" contenteditable="false">Écouter, rassembler et agir : c’est ainsi que notre solidarité prend forme.</p>
+
+        <div class="grid-3">
+            <div class="action-card">
+                <h3 style="margin-bottom:8px;" contenteditable="false">Améliorer le quotidien</h3>
+                <p style="font-size:14px; color:#555;" contenteditable="false">Partir des besoins des personnes atteintes d’un cancer pour imaginer une aide utile au quotidien. Nos manchons en coton, conçus pour être placés sous les bracelets réfrigérants, sont notre première réalisation.</p>
+            </div>
+            <div class="action-card">
+                <h3 style="margin-bottom:8px;" contenteditable="false">Créer pour soutenir</h3>
+                <p style="font-size:14px; color:#555;" contenteditable="false">Proposer des créations lors de ventes solidaires pour collecter des fonds au service des personnes atteintes d’un cancer. Chacun choisit son niveau de soutien : Coup de pouce, Super coup de pouce ou Don libre, dans le respect du minimum du produit.</p>
+            </div>
+            <div class="action-card">
+                <h3 style="margin-bottom:8px;" contenteditable="false">Faire grandir la solidarité</h3>
+                <p style="font-size:14px; color:#555;" contenteditable="false">Rassembler des adhérents et faire connaître l’association pour donner de la force à ses actions. La solidarité, l’entraide, l’aide concrète et la bienveillance nous guident.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notre Premiere Action + Photo -->
+    <section>
+        <span class="section-tag" contenteditable="false">NOTRE PREMIÈRE ACTION</span>
+        <h2 style="font-size: 28px; margin-bottom: 10px;" contenteditable="false">Quand une idée devient une solution.</h2>
+        <p style="color:var(--text-muted);" contenteditable="false">Une action concrète née au cœur des soins.</p>
+
+        <div style="margin-top:20px; font-size:15px; color:#444; display:flex; flex-direction:column; gap:12px;">
+            <p contenteditable="false">Pendant ses soins, Sophie a observé que les équipes soignantes utilisaient des feuilles de papier essuie-main pour protéger la peau lors d’utilisation de bracelets réfrigérants, faute de matériel plus adapté.</p>
+            <p contenteditable="false">Elle a partagé cette réflexion avec une amie couturière. Ensemble, elles ont imaginé un premier prototype, puis l’ont fait évoluer jusqu’à obtenir un manchon pratique, confortable et adapté aux besoins du service.</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="action-card">
+                <h3 style="color:var(--primary); margin-bottom:8px;" contenteditable="false">BRAS</h3>
+                <p style="font-size:14px;" contenteditable="false">Jersey 100 % coton imprimé. Modèle plus étroit pour une protection ajustée des bras sous les bracelets réfrigérants.</p>
+            </div>
+            <div class="action-card">
+                <h3 style="color:var(--primary); margin-bottom:8px;" contenteditable="false">JAMBES</h3>
+                <p style="font-size:14px;" contenteditable="false">Jersey 100 % coton uni. Modèle plus large permettant d'identifier facilement les manchons destinés aux jambes.</p>
+            </div>
+        </div>
+
+        <!-- Zone Photo verticale -->
+        <div style="margin-top: 30px;">
+            <h3 style="font-size: 18px; margin-bottom: 10px; text-align: center;" contenteditable="false">De la confection à l’utilisation : notre première action en images</h3>
+            <div class="photo-upload-zone" onclick="triggerActionPhotoUpload()">
+                <img id="action-photo-img" src="" alt="Photo Première Action" style="display:none;">
+                <div id="action-photo-prompt" style="text-align:center; padding:20px;">
+                    <span style="font-size:32px;">📷</span>
+                    <p style="font-size:14px; color:var(--primary); font-weight:600; margin-top:8px;">Cliquez en mode Personnaliser pour ajouter votre photo verticale</p>
+                </div>
+            </div>
+            <input type="file" id="action-photo-input" accept="image/*" style="display:none;" onchange="loadActionPhoto(event)">
+        </div>
+
+        <div class="quote-box">
+            <p contenteditable="false">« Pour l’avoir moi-même utilisé pendant mes soins, j’ai constaté que le manchon améliorait mon confort et me permettait de mieux tolérer le froid, tout en apportant une touche de couleur dans cet environnement aseptisé. »</p>
+            <p style="margin-top:8px; font-weight:600; font-size:13px; color:var(--primary);" contenteditable="false">Sophie MAISSE · témoignage personnel</p>
+        </div>
+    </section>
+
+    <!-- Articles à Vendre / Boutique Solidaires -->
+    <section id="creations">
+        <span class="section-tag" contenteditable="false">BOUTIQUE SOLIDAIRE & STOCK</span>
+        <h2 style="font-size: 28px; margin-bottom: 5px;" contenteditable="false">Nos Créations Solidaires</h2>
+        <p style="color:var(--text-muted);" contenteditable="false">Chaque acquisition permet de financer nos actions auprès des personnes atteintes d'un cancer.</p>
+
+        <!-- Explication des 3 types de soutien -->
+        <div class="support-types-box">
+            <h3 style="font-size:17px; color:var(--primary); text-align:center;" contenteditable="false">💛 Comment fonctionne votre soutien solidaire ?</h3>
+            <p style="font-size:13px; text-align:center; color:#666; margin-top:4px;" contenteditable="false">Vous choisissez librement le niveau de votre contribution lors de l'acquisition d'une création :</p>
+            <div class="support-grid">
+                <div class="support-card">
+                    <h4 contenteditable="false">1. Coup de pouce</h4>
+                    <p contenteditable="false">Contribution minimale + <strong>5 €</strong> (pour les tableaux) ou <strong>+ 2 €</strong> (pour les autres créations).</p>
+                </div>
+                <div class="support-card">
+                    <h4 contenteditable="false">2. Super coup de pouce</h4>
+                    <p contenteditable="false">Contribution minimale + <strong>10 €</strong> (pour les tableaux) ou <strong>+ 4 €</strong> (pour les autres créations).</p>
+                </div>
+                <div class="support-card">
+                    <h4 contenteditable="false">3. Don libre</h4>
+                    <p contenteditable="false">Paiement de la contribution minimale pour couvrir les frais, avec la possibilité d'ajouter un montant libre supplémentaire ou non.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Double Barre de Filtre (Catégorie + Statut visible) -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="category-filter" style="font-weight: 600; font-size: 14px;">Catégorie :</label>
+                <select id="category-filter" onchange="renderCreations()">
+                    <option value="all">Toutes les catégories</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="status-filter" style="font-weight: 600; font-size: 14px;">Afficher :</label>
+                <select id="status-filter" onchange="renderCreations()">
+                    <option value="all">Toutes les créations</option>
+                    <option value="prête">Création prête</option>
+                    <option value="épuisée">Création épuisée</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-creations" id="grid-creations"></div>
+    </section>
+
+    <!-- Modale Ajout/Edition Article -->
+    <div class="modal" id="modal-form">
+        <div class="modal-content">
+            <h3 id="modal-title" style="margin-bottom:20px;">Ajouter une création à vendre</h3>
+            <form id="form-creation">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label>Code Article</label>
+                    <input type="text" id="edit-code" placeholder="ex: DP-001 ou PC-001" required oninput="autoDetectCategory(this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Titre de l'article</label>
+                    <input type="text" id="edit-title" placeholder="ex: Tableau Diamond Fleur" required>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie (détectée automatiquement par le code)</label>
+                    <input type="text" id="edit-category" readonly style="background:#e9ecef; cursor:not-allowed;" required>
+                </div>
+                <div class="form-group">
+                    <label>Contribution minimale (€)</label>
+                    <input type="number" id="edit-price" step="0.01" placeholder="ex: 15.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Statut de la création</label>
+                    <select id="edit-status">
+                        <option value="prête">Création prête</option>
+                        <option value="à préparer">À préparer</option>
+                        <option value="épuisé">Épuisé</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Photo de l'article</label>
+                    <input type="file" id="edit-file" accept="image/*" onchange="previewCardImage(event)">
+                    <input type="hidden" id="edit-image-data">
+                </div>
+                <div class="form-group">
+                    <label>Visibilité dans la boutique</label>
+                    <select id="edit-visibility">
+                        <option value="visible">Visible par le public</option>
+                        <option value="hidden">Masquée (Gestion du Stock uniquement)</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <button type="button" class="btn-danger" id="btn-delete" onclick="deleteCurrentCard()">Supprimer</button>
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Annuler</button>
+                        <button type="submit" class="btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const prefixMap = {
+            "DP": "Tableau",
+            "PC": "Porte-Clés",
+            "BR": "Bracelet",
+            "CO": "Collier",
+            "AS": "Attrape Soleil",
+            "MP": "Marque Page",
+            "BM": "Boite à mouchoirs",
+            "CV": "Cartes de Voeux",
+            "DV": "Dessous de Verre",
+            "BN": "Bloc Notes",
+            "TB": "Tote Bag",
+            "SB": "Sac Bandoulière",
+            "BO": "Boucle d'oreille",
+            "AC": "Autocollant",
+            "MA": "Magnet",
+            "DN": "Décoration de Noël"
+        };
+
+        function getCategoryFromCode(code) {
+            if (!code) return "Autre";
+            const cleanCode = code.trim().toUpperCase();
+            const prefix = cleanCode.substring(0, 2);
+            return prefixMap[prefix] || "Autre";
+        }
+
+        function autoDetectCategory(code) {
+            const cat = getCategoryFromCode(code);
+            document.getElementById('edit-category').value = cat;
+        }
+
+        let creations = JSON.parse(localStorage.getItem('hmdv_creations')) || [
+            { id: 1, code: "DP-001", title: "Tableau Diamond - Fleur", category: "Tableau", price: 15, status: "prête", image: "https://via.placeholder.com/300x200?text=Tableau", visibility: "visible" },
+            { id: 2, code: "PC-001", title: "Porte-clés Cœur", category: "Porte-Clés", price: 10, status: "prête", image: "https://via.placeholder.com/300x200?text=Porte-Cles", visibility: "visible" },
+            { id: 3, code: "DP-002", title: "Tableau Diamond - Papillon", category: "Tableau", price: 20, status: "épuisé", image: "https://via.placeholder.com/300x200?text=Papillon", visibility: "visible" }
+        ];
+
+        const toggle = document.getElementById('mode-toggle');
+        const grid = document.getElementById('grid-creations');
+
+        if (toggle) {
+            toggle.addEventListener('change', (e) => {
+                const isEditing = e.target.checked;
+                document.body.classList.toggle('editing', isEditing);
+                
+                document.querySelectorAll('[contenteditable]').forEach(el => {
+                    el.setAttribute('contenteditable', isEditing ? 'true' : 'false');
+                });
+
+                renderCreations();
+            });
+        }
+
+        function updateCategoryFilterOptions() {
+            const select = document.getElementById('category-filter');
+            if (!select) return;
+            const currentVal = select.value;
+            const categories = [...new Set(creations.map(c => c.category))];
+            
+            let optionsHtml = '<option value="all">Toutes les catégories</option>';
+            categories.forEach(cat => {
+                optionsHtml += `<option value="${cat}">${cat}</option>`;
+            });
+            select.innerHTML = optionsHtml;
+            select.value = categories.includes(currentVal) ? currentVal : 'all';
+        }
+
+        function sendInterestEmail(title, code, price) {
+            const email = "contact.hmdv42@gmail.com";
+            const subject = "Intérêt pour la création : " + title + " (" + code + ")";
+            const body = "Bonjour,\n\nJe suis intéressé(e) par la création suivante :\n- Titre : " + title + "\n- Code article : " + code + "\n- Contribution minimale : " + parseFloat(price).toFixed(2) + " €\n\nMerci de me recontacter pour les modalités d'acquisition.\n\nCordialement,";
+            
+            window.location.href = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        }
+
+        function renderCreations() {
+            updateCategoryFilterOptions();
+            const categorySelect = document.getElementById('category-filter');
+            const statusSelect = document.getElementById('status-filter');
+            
+            const selectedCategory = categorySelect ? categorySelect.value : 'all';
+            const selectedStatus = statusSelect ? statusSelect.value : 'all';
+            const isEditing = document.body.classList.contains('editing');
+
+            const filtered = creations.filter(item => {
+                let itemVis = item.visibility ? item.visibility.toLowerCase().trim() : 'visible';
+                if (!isEditing && itemVis === 'hidden') return false;
+
+                if (selectedCategory !== 'all' && item.category !== selectedCategory) return false;
+                
+                let itemStatus = item.status ? item.status.toLowerCase().trim() : 'prête';
+                if (selectedStatus === 'prête' && itemStatus !== 'prête') return false;
+                if (selectedStatus === 'épuisée' && itemStatus !== 'épuisé' && itemStatus !== 'épuisée') return false;
+
+                return true;
+            });
+
+            if (!grid) return;
+            grid.innerHTML = "";
+            
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-creation';
+                let itemVis = item.visibility ? item.visibility.toLowerCase().trim() : 'visible';
+                card.setAttribute('data-visibility', itemVis);
+
+                let badgeHtml = '';
+                let itemStatus = item.status ? item.status.toLowerCase().trim() : 'prête';
+                let isSoldOut = (itemStatus.includes('épuisé') || itemStatus.includes('epuise') || itemStatus.includes('épuisée'));
+
+                if (isSoldOut) {
+                    card.classList.add('is-soldout');
+                    badgeHtml = `<div class="badge-status badge-soldout">Épuisé</div>`;
+                } else if (itemStatus.includes('préparer') || itemStatus.includes('preparer')) {
+                    badgeHtml = `<div class="badge-status badge-preparing">À préparer</div>`;
+                } else {
+                    badgeHtml = `<div class="badge-status badge-ready">Prête</div>`;
+                }
+
+                let actionButtonHtml = '';
+                if (isSoldOut) {
+                    actionButtonHtml = `<div style="text-align:center; font-size:13px; color:#d6336c; font-weight:700; margin-top:10px; padding:8px; background:#fff0f3; border-radius:6px;">Actuellement épuisé</div>`;
+                } else {
+                    actionButtonHtml = `<button type="button" class="btn-interest">✉️ Cette création m'intéresse</button>`;
+                }
+
+                const formattedPrice = parseFloat(item.price || 0).toFixed(2);
+
+                card.innerHTML = `
+                    ${badgeHtml}
+                    <div class="card-img-wrapper">
+                        <img src="${item.image}" class="card-img" alt="${item.title}">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-code">${item.code}</span>
+                        <span style="font-size:11px; color:var(--primary); font-weight:700; text-transform:uppercase;">${item.category}</span>
+                        <h3 style="font-size:16px; margin:4px 0;">${item.title}</h3>
+                        <div style="font-weight:700; margin-top:auto; font-size:13px; color:var(--text-dark);">Contribution min. : <span style="color:var(--primary); font-size:15px;">${formattedPrice} €</span></div>
+                        ${actionButtonHtml}
+                        <button class="btn-edit-card" onclick="editCard(${item.id})">✏️ Modifier l'article</button>
+                    </div>
+                `;
+
+                if (!isSoldOut) {
+                    card.querySelector('.btn-interest').addEventListener('click', () => {
+                        sendInterestEmail(item.title, item.code, formattedPrice);
+                    });
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        function saveCreations() {
+            localStorage.setItem('hmdv_creations', JSON.stringify(creations));
+        }
+
+        function triggerLogoUpload() {
+            if(document.body.classList.contains('editing')) {
+                document.getElementById('hero-logo-input').click();
+            }
+        }
+
+        function loadHeroLogo(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('hero-logo-img').src = e.target.result;
+                    document.getElementById('hero-logo-img').style.display = 'block';
+                    document.getElementById('logo-prompt-text').style.display = 'none';
+                    localStorage.setItem('hmdv_logo', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function triggerActionPhotoUpload() {
+            if(document.body.classList.contains('editing')) {
+                document.getElementById('action-photo-input').click();
+            }
+        }
+
+        function loadActionPhoto(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('action-photo-img').src = e.target.result;
+                    document.getElementById('action-photo-img').style.display = 'block';
+                    document.getElementById('action-photo-prompt').style.display = 'none';
+                    localStorage.setItem('hmdv_action_photo', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogo = localStorage.getItem('hmdv_logo');
+            if(savedLogo) {
+                const logoImg = document.getElementById('hero-logo-img');
+                const logoPrompt = document.getElementById('logo-prompt-text');
+                if (logoImg && logoPrompt) {
+                    logoImg.src = savedLogo;
+                    logoImg.style.display = 'block';
+                    logoPrompt.style.display = 'none';
+                }
+            }
+
+            const savedActionPhoto = localStorage.getItem('hmdv_action_photo');
+            if(savedActionPhoto) {
+                const actionImg = document.getElementById('action-photo-img');
+                const actionPrompt = document.getElementById('action-photo-prompt');
+                if (actionImg && actionPrompt) {
+                    actionImg.src = savedActionPhoto;
+                    actionImg.style.display = 'block';
+                    actionPrompt.style.display = 'none';
+                }
+            }
+
+            renderCreations();
+        });
+
+        function previewCardImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                resizeImage(file, 600, 600, 0.8, function(compressedDataUrl) {
+                    document.getElementById('edit-image-data').value = compressedDataUrl;
+                });
+            }
+        }
+
+        function resizeImage(file, maxWidth, maxHeight, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openModal() {
+            document.getElementById('modal-title').innerText = "Ajouter une création à vendre";
+            document.getElementById('form-creation').reset();
+            document.getElementById('edit-id').value = "";
+            document.getElementById('edit-code').value = "";
+            document.getElementById('edit-category').value = "";
+            document.getElementById('edit-image-data').value = "";
+            document.getElementById('edit-status').value = "prête";
+            document.getElementById('btn-delete').style.display = "none";
+            document.getElementById('modal-form').style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('modal-form').style.display = "none";
+        }
+
+        function editCard(id) {
+            const item = creations.find(c => c.id === id);
+            if(!item) return;
+
+            document.getElementById('modal-title').innerText = "Modifier l'article";
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-code').value = item.code;
+            document.getElementById('edit-title').value = item.title;
+            document.getElementById('edit-category').value = item.category;
+            document.getElementById('edit-price').value = item.price;
+            document.getElementById('edit-status').value = item.status || "prête";
+            document.getElementById('edit-image-data').value = item.image;
+            document.getElementById('edit-visibility').value = item.visibility || "visible";
+            document.getElementById('btn-delete').style.display = "inline-block";
+
+            document.getElementById('modal-form').style.display = "flex";
+        }
+
+        function deleteCurrentCard() {
+            const id = document.getElementById('edit-id').value;
+            if(!id) return;
+
+            if(confirm("Êtes-vous sûr(e) de vouloir supprimer cet article ?")) {
+                creations = creations.filter(c => c.id !== parseInt(id));
+                saveCreations();
+                closeModal();
+                renderCreations();
+            }
+        }
+
+        const formCreation = document.getElementById('form-creation');
+        if (formCreation) {
+            formCreation.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById('edit-id').value;
+                const imgData = document.getElementById('edit-image-data').value;
+                const codeVal = document.getElementById('edit-code').value;
+                
+                const newItem = {
+                    id: id ? parseInt(id) : Date.now(),
+                    code: codeVal,
+                    title: document.getElementById('edit-title').value,
+                    category: getCategoryFromCode(codeVal),
+                    price: parseFloat(document.getElementById('edit-price').value),
+                    status: document.getElementById('edit-status').value,
+                    image: imgData || "https://via.placeholder.com/300x200?text=Creation",
+                    visibility: document.getElementById('edit-visibility').value
+                };
+
+                if(id) {
+                    const index = creations.findIndex(c => c.id === parseInt(id));
+                    creations[index] = newItem;
+                } else {
+                    creations.push(newItem);
+                }
+
+                saveCreations();
+                closeModal();
+                renderCreations();
+            });
+        }
+
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Code;Titre;Categorie;Prix;Statut;Visibilite\n";
+            creations.forEach(c => {
+                csvContent += `"${c.code}";"${c.title}";"${c.category}";${c.price};"${c.status || 'prête'}";"${c.visibility || 'visible'}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "stock_creations_hmdv.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let text = e.target.result;
+                const lines = text.split(/\r\n|\n/);
+                let newCreations = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    let line = lines[i].trim();
+                    if (!line) continue;
+
+                    let parts = line.split(';');
+                    if (parts.length >= 4) {
+                        let code = parts[0] ? parts[0].replace(/"/g, '').trim() : '';
+                        let title = parts[1] ? parts[1].replace(/"/g, '').trim() : 'Sans titre';
+                        let category = getCategoryFromCode(code);
+                        let price = parts[3] ? parseFloat(parts[3].replace(',', '.')) || 0 : 0;
+                        
+                        let rawStatus = parts[4] ? parts[4].replace(/"/g, '').trim().toLowerCase() : 'prête';
+                        let status = 'prête';
+                        if (rawStatus.includes('épuisé') || rawStatus.includes('epuise') || rawStatus.includes('épuisée')) {
+                            status = 'épuisé';
+                        } else if (rawStatus.includes('préparer') || rawStatus.includes('preparer')) {
+                            status = 'à préparer';
+                        }
+
+                        let rawVis = parts[5] ? parts[5].replace(/"/g, '').trim().toLowerCase() : 'visible';
+                        let visibility = 'visible';
+                        if (rawVis.includes('hidden') || rawVis.includes('masqué') || rawVis.includes('non visible')) {
+                            visibility = 'hidden';
+                        }
+
+                        let id = Date.now() + i;
+                        let existing = creations.find(c => c.code === code);
+                        let image = existing ? existing.image : "https://via.placeholder.com/300x200?text=Creation";
+
+                        newCreations.push({ id, code, title, category, price, status, image, visibility });
+                    }
+                }
+
+                (newCreations.length > 0) ? (creations = newCreations, saveCreations(), renderCreations(), alert("Importation réussie ! " + newCreations.length + " articles chargés.")) : alert("Erreur lors de la lecture du fichier CSV. Vérifiez votre fichier.");
+            };
+            reader.readAsText(file, "UTF-8");
+            event.target.value = "";
+        }
+function processImageFile(fileInput, callback) {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                const MAX_WIDTH = 800;
+                if (width > MAX_WIDTH) {
+                    height = Math.round((height * MAX_WIDTH) / width);
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                callback(compressedDataUrl);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    </script>
+</body>
+</html>
